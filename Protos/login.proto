@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+message c2g_plrLogin{
+    int32  serverId      = 1;
+    int64  accountId     = 2;
+    int32  modelId       = 3; 
+    string userName      = 4;
+    int32  iconId        = 5;
+}
+
+message g2c_plrLogin{
+    int32  serverId         = 1;
+    int64  accountId        = 2;
+    // int32  roomId 	     	= 3;
+}
+
+message CMSG_PING{
+    int32 ping              = 1;
+}
+
+message SMSG_PONG{
+    
+}
