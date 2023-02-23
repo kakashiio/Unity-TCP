@@ -122,10 +122,17 @@ namespace IO.Unity3D.Source.TCP
             
             _OneByteBuffer[0] = data;
             TCPLogger.LogVerbose(_Name, "Context Sent 1 bytes, flush={0}", flush);
-            _Stream.Write(_OneByteBuffer, 0, 1);
-            if (flush)
+            try
             {
-                _Stream.Flush();
+                _Stream.Write(_OneByteBuffer, 0, 1);
+                if (flush)
+                {
+                    _Stream.Flush();
+                }
+            }
+            catch (Exception e)
+            {
+                _OnException(e);
             }
         }
 
@@ -149,7 +156,14 @@ namespace IO.Unity3D.Source.TCP
                 }
                 
                 TCPLogger.LogVerbose(_Name, "Context Sent {0} bytes, flush={1}", count, flush);
-                _Stream.Write(bytes, offset, count);
+                try
+                {
+                    _Stream.Write(bytes, offset, count);
+                }
+                catch (Exception e)
+                {
+                    _OnException(e);
+                }
             }
             
             if (flush)
@@ -171,10 +185,17 @@ namespace IO.Unity3D.Source.TCP
             }
             
             TCPLogger.LogVerbose(_Name, "Context Sent {0} bytes, flush={1}", count, flush);
-            _Stream.Write(data, offset, count);
-            if (flush)
+            try
             {
-                _Stream.Flush();
+                _Stream.Write(data, offset, count);
+                if (flush)
+                {
+                    _Stream.Flush();
+                }
+            }
+            catch (Exception e)
+            {
+                _OnException(e);
             }
         }
 
@@ -203,6 +224,11 @@ namespace IO.Unity3D.Source.TCP
         public override string ToString()
         {
             return $"[{_Name}] {_Socket}";
+        }
+
+        public void FireException(Exception exception)
+        {
+            _OnException(exception);
         }
     }
 }
