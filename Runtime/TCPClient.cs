@@ -30,8 +30,15 @@ namespace IO.Unity3D.Source.TCP
             _Port = port;
             _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _Ctx = new TCPContext("Client", _Socket, _ChannelHandlerCreator());
-            _Socket.Connect(host, port);
-            _Ctx.OnConnected();
+            try
+            {
+                _Socket.Connect(host, port);
+                _Ctx.OnConnected();
+            }
+            catch (Exception e)
+            {
+                _Ctx.FireException(e);
+            }
         }
 
         public async Task ConnectAsync(string host, int port)
@@ -40,8 +47,18 @@ namespace IO.Unity3D.Source.TCP
             _Port = port;
             _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _Ctx = new TCPContext("Client", _Socket, _ChannelHandlerCreator());
-            await _Socket.ConnectAsync(host, port);
-            _Ctx.OnConnected();
+            
+            var connectTask = _Socket.ConnectAsync(host, port);
+            
+            try
+            {
+                await connectTask;
+                _Ctx.OnConnected();
+            }
+            catch (Exception e)
+            {
+                _Ctx.FireException(e);
+            }
         }
 
         public void Write(object data)
